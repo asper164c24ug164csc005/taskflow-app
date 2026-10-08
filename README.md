@@ -1,108 +1,77 @@
-# TaskFlow – Week 3 Back-End API Development
+# TaskFlow – Full Stack Task Management App
 
-A RESTful back-end API for the TaskFlow web application, built with Python Flask and SQLite.
+TaskFlow lets users create, view, update and delete tasks. The React front-end talks to a Flask REST API, which stores data in SQLite.
 
-## Features
-- User registration and login
-- JWT-based authentication
-- Password hashing
-- CRUD operations for tasks
-- SQLite database
-- Input validation
-- Error handling
-- CORS support for front-end integration
-- Pytest API tests
-- Clear API documentation
+## Tech Stack
+- Front-end: React (Vite), Axios
+- Back-end: Python Flask, Flask-CORS, Flask-SQLAlchemy
+- Database: SQLite
 
 ## Project Structure
-```text
-Week3_TaskFlow_Backend/
-├── app.py
-├── requirements.txt
-├── README.md
-└── tests/
-    └── test_api.py
+```
+taskflow-app/
+├── backend/   (app.py, models.py, requirements.txt)
+└── frontend/  (src/, package.json, .env)
 ```
 
-## Setup
-1. Install Python 3.10+.
-2. Create and activate a virtual environment.
-3. Install dependencies:
-   `pip install -r requirements.txt`
-4. Run:
-   `python app.py`
-5. API base URL:
-   `http://127.0.0.1:5000`
+## Setup and Run Locally
 
-## API Documentation
-
-### Health
-`GET /api/health`
-
-Response:
-```json
-{"status":"success","message":"TaskFlow API is running"}
-```
-
-### Register
-`POST /api/auth/register`
-
-Body:
-```json
-{"name":"Dharshini","email":"dharshini@example.com","password":"secret123"}
-```
-
-### Login
-`POST /api/auth/login`
-
-Body:
-```json
-{"email":"dharshini@example.com","password":"secret123"}
-```
-
-The response contains an `access_token`. Send it for protected endpoints using:
-`Authorization: Bearer <token>`
-
-### Create Task
-`POST /api/tasks`
-
-Body:
-```json
-{
-  "title":"Complete Week 3",
-  "description":"Build REST API",
-  "status":"pending",
-  "priority":"high"
-}
-```
-
-### Get All Tasks
-`GET /api/tasks`
-
-### Get One Task
-`GET /api/tasks/<task_id>`
-
-### Update Task
-`PUT /api/tasks/<task_id>`
-
-Body can contain `title`, `description`, `status`, or `priority`.
-
-### Delete Task
-`DELETE /api/tasks/<task_id>`
-
-## Validation
-- Name, email and password are required during registration.
-- Password must contain at least 6 characters.
-- Email must have a valid basic format.
-- Task title is required.
-- Status: `pending`, `in-progress`, `completed`.
-- Priority: `low`, `medium`, `high`.
-
-## Testing
-Run:
+### 1. Back-end
 ```bash
-pytest -q
+cd backend
+python -m venv venv
+venv\Scripts\activate        # Windows  (Mac/Linux: source venv/bin/activate)
+pip install -r requirements.txt
+python app.py
 ```
+API runs at http://localhost:5000
 
-## Security Notes
-Passwords are stored as hashes, not plain text. JWT authentication protects task endpoints and each user can access only their own tasks. For deployment, store the JWT secret in an environment variable and disable Flask debug mode.
+### 2. Front-end (new terminal)
+```bash
+cd frontend
+npm install
+```
+Create `frontend/.env`:
+```
+VITE_API_URL=http://localhost:5000/api
+```
+```bash
+npm run dev
+```
+App runs at http://localhost:5173
+
+## API Endpoints
+| Method | Endpoint | Purpose |
+|---|---|---|
+| GET | /api/tasks | Get all tasks |
+| GET | /api/tasks/<id> | Get one task |
+| POST | /api/tasks | Create task |
+| PUT | /api/tasks/<id> | Update task |
+| DELETE | /api/tasks/<id> | Delete task |
+
+## Integration Process
+1. Reviewed the front-end components and back-end routes to match integration points.
+2. Enabled CORS in Flask so the React app can call the API.
+3. Created a service layer (`api.js`) with Axios and a base URL from `.env`.
+4. Used `async/await` with `useEffect` to load tasks, and `useState` for tasks, loading and error state.
+5. Connected the add, edit and delete actions to the API and updated state from the response.
+6. Added try/catch and user-friendly error messages.
+7. Tested all endpoints in Postman and then from the UI.
+
+## Validation Rules
+- Title: required, 3–100 characters
+- Description: max 500 characters
+- Status: todo / in_progress / done
+- Priority: low / medium / high
+- Due date: YYYY-MM-DD
+
+## Challenges and Solutions
+| Challenge | Solution |
+|---|---|
+| CORS error | Enabled Flask-CORS |
+| UI not updating after add/delete | Updated state from API response |
+| Hard-coded API URL | Moved to `.env` variable |
+| Blank screen on API failure | Added error handling and error state |
+
+## Demo
+Demo video / deployed link: _add your link here_
